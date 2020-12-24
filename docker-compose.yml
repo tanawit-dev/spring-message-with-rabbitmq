@@ -1,0 +1,31 @@
+version: "3.7"
+
+services:
+  rabbitmq:
+    container_name: rabbitmq
+    image: rabbitmq:3-management
+    ports:
+      - 15672:15672
+      - 5672:5672
+    volumes:
+      - rabbit-data:/data
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: pass
+    hostname: rabbitmq
+  email-service:
+    container_name: email-service
+    image: tanawit17/email-service
+    depends_on:
+      - rabbitmq
+    ports:
+      - 8081:8080
+  customer-service:
+    container_name: customer-service
+    image: tanawit17/customer-service
+    depends_on:
+      - rabbitmq
+    ports:
+      - 8080:8080
+volumes:
+  rabbit-data:
